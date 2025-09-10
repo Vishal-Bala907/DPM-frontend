@@ -1,15 +1,20 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useEffect } from "react";
+// import reactLogo from "./assets/react.svg";
+// import viteLogo from "/vite.svg";
+// import Login from "./Login";
 import "./App.css";
-import Login from "./Login";
+import { useNavigate } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate("/home");
+  }, []);
 
   return (
     <>
-      <div>
+      this is our home page
+      {/* <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -29,7 +34,7 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-      <Login />
+      <Login /> */}
     </>
   );
 }
