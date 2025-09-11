@@ -1,0 +1,84 @@
+/* From Uiverse.io by vikiWayne */
+.PCTAButton {
+  padding: 0.7em 1em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  /* letter-spacing: 5px; */
+  text-transform: uppercase;
+  cursor: pointer;
+  color: #2c9caf;
+  background-color: aliceblue;
+  transition: all 1000ms;
+  font-size: clamp(6px, 12px, 18px);
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #4ce4ff;
+}
+
+.PCTAButton:hover {
+  color: #000000;
+  transform: scale(1.05);
+  outline: 2px solid #4ce4ff;
+  box-shadow: 4px 5px 17px -4px #268391;
+}
+
+.PCTAButton::before {
+  content: "";
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #5ae6ff;
+  transform: skewX(45deg);
+  z-index: -1;
+  transition: width 1000ms;
+}
+
+.PCTAButton:hover::before {
+  width: 250%;
+}
+/* SECONDRY CTA BUTTON */
+
+.SCTAButton {
+  padding: 0.7em 1em;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  /* letter-spacing: 5px; */
+  /* text-transform: uppercase; */
+  cursor: pointer;
+  color: #ffaa00;
+  background-color: rgb(254, 255, 200);
+  transition: all 1000ms;
+  font-size: clamp(6px, 12px, 18px);
+  position: relative;
+  overflow: hidden;
+  outline: 2px solid #edff4f;
+}
+
+.SCTAButton:hover {
+  color: #000000;
+  transform: scale(1.05);
+  outline: 2px solid #ffff4c;
+  box-shadow: 4px 5px 17px -4px #8c9126;
+}
+
+.SCTAButton::before {
+  content: "";
+  position: absolute;
+  left: -50px;
+  top: 0;
+  width: 0;
+  height: 100%;
+  background-color: #fff75a;
+  transform: skewX(45deg);
+  z-index: -1;
+  transition: width 1000ms;
+}
+
+.SCTAButton:hover::before {
+  width: 250%;
+}
+/* SECONDRY CTA BUTTON */
