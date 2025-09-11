@@ -38,6 +38,7 @@ const Crousel: React.FC<Props> = ({ CROUSEL }) => {
               <button
                 className="glide__bullet"
                 data-glide-dir={`=${index}`}
+                key={index}
               ></button>
             ))}
           </div>
@@ -84,7 +85,7 @@ function CrouselTextContent({
     <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]  inset-0 flex flex-col items-center justify-center text-white">
       <h2 className="md:text-4xl text-2xl font-bold text-center">{title}</h2>
       <p className="mt-2 text-center">{description}</p>
-      <div className="mt-4 flex flex-row gap-4">
+      <div className="mt-4 flex flex-row flex-wrap justify-center gap-4">
         <CTAPrimaryButton text="Get Started" />
         <STAPrimaryButton text="View Pricing" />
         {/* <Button text="View Pricing" /> */}
