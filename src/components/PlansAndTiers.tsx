@@ -1,78 +1,6 @@
 import React from "react";
-
-interface PlanFeature {
-  text: string;
-  included: boolean;
-}
-
-interface Plan {
-  title: string;
-  price?: string;
-  features: PlanFeature[];
-  isPopular?: boolean;
-}
-
-interface PlanCategory {
-  category: string;
-  icon: string;
-  plans: Plan[];
-}
-
-const plansData: PlanCategory[] = [
-  {
-    category: "For Individuals",
-    icon: "👤",
-    plans: [
-      {
-        title: "Free",
-        features: [
-          { text: "Add daily work", included: true },
-          { text: "View last 1 month's data", included: true },
-          { text: "Edit work logs", included: false },
-          { text: "Adjust work durations", included: false },
-          { text: "View data for any time range", included: false },
-        ],
-      },
-      {
-        title: "Paid",
-        price: "₹59/month",
-        isPopular: true,
-        features: [
-          { text: "All Free features", included: true },
-          { text: "Edit work logs", included: true },
-          { text: "Adjust work durations", included: true },
-          { text: "View data for any time range", included: true },
-        ],
-      },
-    ],
-  },
-  {
-    category: "For Organizations",
-    icon: "🏢",
-    plans: [
-      {
-        title: "Free",
-        features: [
-          { text: "Add up to 4 employees", included: true },
-          { text: "View 1 month's employee data", included: true },
-          { text: "Unlimited employees", included: false },
-          { text: "Employees get 2 daily work edit limits", included: false },
-          { text: "View data for any time range", included: false },
-        ],
-      },
-      {
-        title: "Paid",
-        price: "₹299/month",
-        isPopular: true,
-        features: [
-          { text: "Unlimited employees", included: true },
-          { text: "Employees get 2 daily work edit limits", included: true },
-          { text: "View data for any time range", included: true },
-        ],
-      },
-    ],
-  },
-];
+import { Link } from "react-router-dom";
+import { plansData } from "../data/common.data";
 
 const PlansAndTiers: React.FC = () => {
   return (
@@ -224,10 +152,33 @@ const PlansAndTiers: React.FC = () => {
         </div>
 
         {/* Call to action section */}
-        <div className="text-center mt-16">
+        <div className="text-center mt-16 space-y-6">
           <div className="inline-flex items-center space-x-2 text-sm font-medium text-purple-600 bg-purple-50 px-6 py-3 rounded-full shadow-sm">
             <span>🎯</span>
             <span>Start with Free • Upgrade anytime</span>
+          </div>
+
+          {/* View More Link */}
+          <div>
+            <Link
+              to="/pricing"
+              className="group inline-flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-semibold transition-all duration-300 hover:scale-105"
+            >
+              <span>View Detailed Pricing</span>
+              <svg
+                className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </Link>
           </div>
         </div>
       </div>
