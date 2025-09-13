@@ -4,6 +4,7 @@ import Login from "./Login";
 import OAuth2RedirectHandler from "./OAuth2RedirectHandler";
 import HomePage from "./pages/HomePage";
 import DetailedPricing from "./pages/DetailedPricing";
+import AddWork from "./pages/AddWork";
 const BrowserRoutes = () => {
   const RouteConfig = () => {
     const ROUTES = useRoutes([
@@ -18,6 +19,10 @@ const BrowserRoutes = () => {
       {
         path: "/pricing",
         element: <DetailedPricing />,
+      },
+      {
+        path: "/add-work",
+        element: <AddWork />,
       },
       {
         path: "/login",

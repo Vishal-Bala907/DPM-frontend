@@ -17,4 +17,14 @@ interface PlanCategory {
   plans: Plan[];
 }
 
-export type { PlanFeature, Plan, PlanCategory };
+interface FAQItem {
+  id: string;
+  question: string;
+  answer: string;
+}
+
+interface PricingFAQProps {
+  faqs?: FAQItem[];
+}
+
+export type { PlanFeature, Plan, PlanCategory, FAQItem, PricingFAQProps };

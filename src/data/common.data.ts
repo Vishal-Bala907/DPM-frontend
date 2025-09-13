@@ -14,7 +14,7 @@ const navbarOptions: NavbarOptions[] = [
   },
   {
     label: "Add Work",
-    href: "/#",
+    href: "/add-work",
     icon: "Plus",
   },
   {

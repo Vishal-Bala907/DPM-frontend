@@ -1,68 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-interface FAQItem {
-  id: string;
-  question: string;
-  answer: string;
-}
+import { defaultFAQs as faqs } from "../../data/pricing.data";
 
-interface PricingFAQProps {
-  faqs?: FAQItem[];
-}
-
-const defaultFAQs: FAQItem[] = [
-  {
-    id: "1",
-    question: "Can I switch between plans at any time?",
-    answer:
-      "Yes! You can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle, and you'll be charged or credited the difference accordingly.",
-  },
-  {
-    id: "2",
-    question: "Is there a free trial for paid plans?",
-    answer:
-      "Yes, we offer a 14-day free trial for all paid plans. No credit card required to start your trial. You can experience all premium features before committing to a subscription.",
-  },
-  {
-    id: "3",
-    question: "What payment methods do you accept?",
-    answer:
-      "We accept all major credit cards (Visa, MasterCard, American Express), PayPal, and bank transfers for annual subscriptions. All payments are processed securely through our encrypted payment system.",
-  },
-  {
-    id: "4",
-    question: "Do you offer discounts for annual subscriptions?",
-    answer:
-      "Yes! Annual subscriptions come with a 20% discount compared to monthly billing. You'll save even more money while getting uninterrupted access to all features.",
-  },
-  {
-    id: "5",
-    question: "What happens to my data if I cancel?",
-    answer:
-      "Your data remains accessible for 30 days after cancellation. During this period, you can reactivate your account or export your data. After 30 days, data is permanently deleted for security purposes.",
-  },
-  {
-    id: "6",
-    question: "Can I add more team members to my organization plan?",
-    answer:
-      "Absolutely! You can add team members at any time. For paid plans, additional members will be prorated for the current billing cycle. Free plans have a limit of 4 team members.",
-  },
-  {
-    id: "7",
-    question: "Is there customer support included?",
-    answer:
-      "Yes! All plans include customer support. Free plans get community support, while paid plans receive priority email support and dedicated account management for enterprise customers.",
-  },
-  {
-    id: "8",
-    question: "Do you offer custom enterprise solutions?",
-    answer:
-      "Yes, we offer custom enterprise solutions with advanced security features, custom integrations, and dedicated support. Contact our sales team to discuss your specific requirements.",
-  },
-];
-
-const PricingFAQ: React.FC<PricingFAQProps> = ({ faqs = defaultFAQs }) => {
+const PricingFAQ = () => {
   const [openItems, setOpenItems] = useState<Set<string>>(new Set());
 
   const toggleItem = (id: string) => {
