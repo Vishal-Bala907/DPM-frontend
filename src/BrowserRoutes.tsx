@@ -8,6 +8,10 @@ import AddWork from "./pages/AddWork";
 import ViewWorkData from "./pages/ViewWorkData";
 import CategoryDataPage from "./pages/CategoryDataPage";
 import ViewDateDataPage from "./pages/ViewDateDataPage";
+import DashboardLayout from "./components/DashboardLayout";
+import ViewOrganizationData from "./pages/ViewOrganizationData";
+import ViewEmployeeData from "./pages/ViewEmployeeData";
+import ViewEmployeeDateData from "./pages/ViewEmployeeDateData";
 const BrowserRoutes = () => {
   const RouteConfig = () => {
     const ROUTES = useRoutes([
@@ -49,7 +53,25 @@ const BrowserRoutes = () => {
       },
       {
         path: "/dashboard",
-        element: <div>This is dashboard</div>,
+        element: <DashboardLayout />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <ViewOrganizationData />,
+          },
+          {
+            path: "/dashboard/view-org-data",
+            element: <ViewOrganizationData />,
+          },
+          {
+            path: "/dashboard/view-emp-data",
+            element: <ViewEmployeeData />,
+          },
+          {
+            path: "/dashboard/view-emp-data-datewise",
+            element: <ViewEmployeeDateData />,
+          },
+        ],
       },
     ]);
 
