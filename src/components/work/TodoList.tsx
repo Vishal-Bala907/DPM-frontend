@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Plus, Calendar } from "lucide-react";
+import { Plus, Calendar, Tag } from "lucide-react";
 import TodoItem from "./TodoItem";
 import DatePicker from "../common/DatePicker";
+import type { Category } from "./CategoriesManagement";
 
 interface Todo {
   id: string;
@@ -9,21 +10,24 @@ interface Todo {
   expectedTime: number;
   date: string;
   status: "incomplete" | "completed";
+  category?: string;
   startTime?: string;
   endTime?: string;
 }
 
 interface TodoListProps {
+  categories: Category[];
   onWorkComplete: (workData: {
     description: string;
     startTime: string;
     endTime: string;
     expectedTime: number;
     date: string;
+    category?: string;
   }) => void;
 }
 
-const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
+const TodoList: React.FC<TodoListProps> = ({ categories, onWorkComplete }) => {
   const [selectedDate, setSelectedDate] = useState<string>(
     new Date().toISOString().split("T")[0]
   );
@@ -33,6 +37,7 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
   const [newTodo, setNewTodo] = useState({
     description: "",
     expectedTime: 60,
+    category: "",
   });
 
   const generateId = () =>
@@ -50,10 +55,11 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
       expectedTime: newTodo.expectedTime,
       date: selectedDate,
       status: "incomplete",
+      category: newTodo.category || undefined,
     };
 
     setTodos((prev) => [...prev, todo]);
-    setNewTodo({ description: "", expectedTime: 60 });
+    setNewTodo({ description: "", expectedTime: 60, category: "" });
     setIsAddingTodo(false);
   };
 
@@ -63,6 +69,7 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
       setNewTodo({
         description: todo.description,
         expectedTime: todo.expectedTime,
+        category: todo.category || "",
       });
       setEditingTodo(id);
       setIsAddingTodo(true);
@@ -80,12 +87,13 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
               ...todo,
               description: newTodo.description.trim(),
               expectedTime: newTodo.expectedTime,
+              category: newTodo.category || undefined,
             }
           : todo
       )
     );
 
-    setNewTodo({ description: "", expectedTime: 60 });
+    setNewTodo({ description: "", expectedTime: 60, category: "" });
     setEditingTodo(null);
     setIsAddingTodo(false);
   };
@@ -110,6 +118,7 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
         endTime: timeData.endTime,
         expectedTime: todo.expectedTime,
         date: todo.date,
+        category: todo.category,
       });
 
       // Update todo status
@@ -150,6 +159,20 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
   };
 
   const stats = getStats();
+
+  const getCategoryDisplay = (categoryId?: string) => {
+    if (!categoryId) return null;
+    const category = categories.find((c) => c.id === categoryId);
+    return category ? (
+      <div className="flex items-center space-x-1">
+        <div
+          className="w-2 h-2 rounded-full"
+          style={{ backgroundColor: category.color }}
+        />
+        <span className="text-xs text-gray-600">{category.name}</span>
+      </div>
+    ) : null;
+  };
 
   return (
     <div className="space-y-6">
@@ -214,25 +237,53 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Expected Time (minutes)
-              </label>
-              <input
-                type="number"
-                value={newTodo.expectedTime}
-                onChange={(e) =>
-                  setNewTodo((prev) => ({
-                    ...prev,
-                    expectedTime: parseInt(e.target.value) || 60,
-                  }))
-                }
-                min="1"
-                max="480"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                required
-              />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Expected Time (minutes)
+                </label>
+                <input
+                  type="number"
+                  value={newTodo.expectedTime}
+                  onChange={(e) =>
+                    setNewTodo((prev) => ({
+                      ...prev,
+                      expectedTime: parseInt(e.target.value) || 60,
+                    }))
+                  }
+                  min="1"
+                  max="480"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <Tag size={14} className="inline mr-1" />
+                  Category (Optional)
+                </label>
+                <select
+                  value={newTodo.category}
+                  onChange={(e) =>
+                    setNewTodo((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                >
+                  <option value="">No category</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
+
             <div className="flex space-x-2">
               <button
                 type="submit"
@@ -245,7 +296,11 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
                 onClick={() => {
                   setIsAddingTodo(false);
                   setEditingTodo(null);
-                  setNewTodo({ description: "", expectedTime: 60 });
+                  setNewTodo({
+                    description: "",
+                    expectedTime: 60,
+                    category: "",
+                  });
                 }}
                 className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 font-medium transition-colors duration-200"
               >
@@ -266,16 +321,22 @@ const TodoList: React.FC<TodoListProps> = ({ onWorkComplete }) => {
           </div>
         ) : (
           todosForDate.map((todo) => (
-            <TodoItem
-              key={todo.id}
-              id={todo.id}
-              description={todo.description}
-              expectedTime={todo.expectedTime}
-              status={todo.status}
-              onEdit={handleEditTodo}
-              onDelete={handleDeleteTodo}
-              onStatusChange={handleStatusChange}
-            />
+            <div key={todo.id} className="space-y-2">
+              <TodoItem
+                id={todo.id}
+                description={todo.description}
+                expectedTime={todo.expectedTime}
+                status={todo.status}
+                onEdit={handleEditTodo}
+                onDelete={handleDeleteTodo}
+                onStatusChange={handleStatusChange}
+              />
+              {todo.category && (
+                <div className="ml-10 mb-2">
+                  {getCategoryDisplay(todo.category)}
+                </div>
+              )}
+            </div>
           ))
         )}
       </div>

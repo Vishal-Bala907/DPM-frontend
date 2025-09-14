@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import { Calendar, ListTodo, FileText } from "lucide-react";
+import { Calendar, ListTodo, FileText, Tag } from "lucide-react";
 import { Footer, Navbar } from "../components";
 import Tabs from "../components/common/Tabs";
 import type { Tab } from "../components/common/Tabs";
 import TodoList from "../components/work/TodoList";
 import WorkDetailsForm from "../components/work/WorkDetailsForm";
+import CategoriesManagement, {
+  type Category,
+} from "../components/work/CategoriesManagement";
 
 // Define WorkEntry type to match backend schema
 interface WorkEntry {
@@ -21,6 +24,7 @@ interface WorkEntry {
 const AddWork: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>("addFromList");
   const [workEntries, setWorkEntries] = useState<WorkEntry[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const tabs: Tab[] = [
     {
@@ -33,6 +37,11 @@ const AddWork: React.FC = () => {
       label: "Work Details Form",
       icon: <FileText size={20} />,
     },
+    {
+      id: "myCategories",
+      label: "My Categories",
+      icon: <Tag size={20} />,
+    },
   ];
 
   const handleWorkComplete = (workData: {
@@ -41,6 +50,7 @@ const AddWork: React.FC = () => {
     endTime: string;
     expectedTime: number;
     date: string;
+    category?: string;
   }) => {
     console.log("Work completed from todo:", workData);
 
@@ -75,6 +85,7 @@ const AddWork: React.FC = () => {
     startTime: string;
     endTime: string;
     date: string;
+    category?: string;
     expectedTime?: number;
   }) => {
     console.log("Direct work entry:", workData);
@@ -140,10 +151,23 @@ const AddWork: React.FC = () => {
 
           {/* Tab Content */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            {activeTab === "addFromList" ? (
-              <TodoList onWorkComplete={handleWorkComplete} />
-            ) : (
-              <WorkDetailsForm onSubmit={handleDirectWorkSubmit} />
+            {activeTab === "addFromList" && (
+              <TodoList
+                categories={categories}
+                onWorkComplete={handleWorkComplete}
+              />
+            )}
+            {activeTab === "workDetailsForm" && (
+              <WorkDetailsForm
+                categories={categories}
+                onSubmit={handleDirectWorkSubmit}
+              />
+            )}
+            {activeTab === "myCategories" && (
+              <CategoriesManagement
+                categories={categories}
+                onCategoriesChange={setCategories}
+              />
             )}
           </div>
 

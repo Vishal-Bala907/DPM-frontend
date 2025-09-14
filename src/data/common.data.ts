@@ -19,7 +19,7 @@ const navbarOptions: NavbarOptions[] = [
   },
   {
     label: "View Data",
-    href: "/#",
+    href: "/view-work-data",
     icon: "Database",
   },
   {

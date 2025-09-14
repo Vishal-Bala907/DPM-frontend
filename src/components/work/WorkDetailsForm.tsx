@@ -1,23 +1,30 @@
 import React, { useState } from "react";
-import { Save, Clock, FileText } from "lucide-react";
+import { Save, Clock, FileText, Tag } from "lucide-react";
 import DatePicker from "../common/DatePicker";
+import type { Category } from "./CategoriesManagement";
 
 interface WorkDetailsFormProps {
+  categories: Category[];
   onSubmit: (workData: {
     description: string;
     startTime: string;
     endTime: string;
     date: string;
+    category?: string;
     expectedTime?: number;
   }) => void;
 }
 
-const WorkDetailsForm: React.FC<WorkDetailsFormProps> = ({ onSubmit }) => {
+const WorkDetailsForm: React.FC<WorkDetailsFormProps> = ({
+  categories,
+  onSubmit,
+}) => {
   const [formData, setFormData] = useState({
     description: "",
     startTime: "",
     endTime: "",
     date: new Date().toISOString().split("T")[0],
+    category: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -99,6 +106,7 @@ const WorkDetailsForm: React.FC<WorkDetailsFormProps> = ({ onSubmit }) => {
       startTime: formData.startTime,
       endTime: formData.endTime,
       date: formData.date,
+      category: formData.category || undefined,
       expectedTime: calculateDuration(),
     });
 
@@ -108,6 +116,7 @@ const WorkDetailsForm: React.FC<WorkDetailsFormProps> = ({ onSubmit }) => {
       startTime: "",
       endTime: "",
       date: new Date().toISOString().split("T")[0],
+      category: "",
     });
     setErrors({});
   };
@@ -168,6 +177,26 @@ const WorkDetailsForm: React.FC<WorkDetailsFormProps> = ({ onSubmit }) => {
           {errors.description && (
             <p className="text-red-600 text-sm mt-1">{errors.description}</p>
           )}
+        </div>
+
+        {/* Category */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Tag size={16} className="inline mr-1" />
+            Category (Optional)
+          </label>
+          <select
+            value={formData.category}
+            onChange={(e) => handleInputChange("category", e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">No category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Time Range */}

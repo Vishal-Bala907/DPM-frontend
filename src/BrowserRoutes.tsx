@@ -5,6 +5,9 @@ import OAuth2RedirectHandler from "./OAuth2RedirectHandler";
 import HomePage from "./pages/HomePage";
 import DetailedPricing from "./pages/DetailedPricing";
 import AddWork from "./pages/AddWork";
+import ViewWorkData from "./pages/ViewWorkData";
+import CategoryDataPage from "./pages/CategoryDataPage";
+import ViewDateDataPage from "./pages/ViewDateDataPage";
 const BrowserRoutes = () => {
   const RouteConfig = () => {
     const ROUTES = useRoutes([
@@ -23,6 +26,18 @@ const BrowserRoutes = () => {
       {
         path: "/add-work",
         element: <AddWork />,
+      },
+      {
+        path: "/view-work-data",
+        element: <ViewWorkData />,
+      },
+      {
+        path: "/category-data",
+        element: <CategoryDataPage />,
+      },
+      {
+        path: "/view-date-data",
+        element: <ViewDateDataPage />,
       },
       {
         path: "/login",
