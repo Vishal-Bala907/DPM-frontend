@@ -24,7 +24,7 @@ const navbarOptions: NavbarOptions[] = [
   },
   {
     label: "Profile",
-    href: "#",
+    href: "/profile",
     icon: "User",
   },
   {

@@ -105,12 +105,6 @@ const BrowserRoutes = () => {
   return (
     <div>
       <BrowserRouter>
-        {/* <Routes>
-          <Route path="/" element={<App />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
-          <Route path="/dashboard" element={<div>This is dashboard</div>} />
-        </Routes> */}
         <RouteConfig />
       </BrowserRouter>
     </div>
