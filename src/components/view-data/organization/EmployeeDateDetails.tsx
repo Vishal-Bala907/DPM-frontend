@@ -34,6 +34,7 @@ interface DailyData {
   date: string;
   hours: number;
   rating: number;
+  description: string;
 }
 
 const EmployeeDateDetails: React.FC = () => {
@@ -41,23 +42,105 @@ const EmployeeDateDetails: React.FC = () => {
   const navigate = useNavigate();
   const employeeId = searchParams.get("employeeId");
   const employeeName = searchParams.get("employeeName") || "Unknown Employee";
+  const employeeEmail = searchParams.get("email") || "john.doe@company.com";
+  const selectedDate = searchParams.get("date");
+  const urlStartDate = searchParams.get("startDate");
+  const urlEndDate = searchParams.get("endDate");
+
+  // Convert MM-DD-YYYY format to YYYY-MM-DD if needed
+  const convertDateFormat = (dateStr: string | null): string | null => {
+    if (!dateStr) return null;
+
+    // Check if it's in MM-DD-YYYY format
+    if (dateStr.match(/^\d{2}-\d{2}-\d{4}$/)) {
+      const [month, day, year] = dateStr.split("-");
+      return `${year}-${month}-${day}`;
+    }
+
+    return dateStr; // Already in YYYY-MM-DD format
+  };
+
+  const normalizedSelectedDate = convertDateFormat(selectedDate);
 
   // Date range state
   const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState(
+    urlStartDate ||
+      normalizedSelectedDate ||
+      new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0]
+  );
+  const [endDate, setEndDate] = useState(
+    urlEndDate || new Date().toISOString().split("T")[0]
+  );
   const daysPerPage = 30;
 
+  // Default date range functions
+  const setDateRange = (days: number) => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - days);
+
+    setStartDate(start.toISOString().split("T")[0]);
+    setEndDate(end.toISOString().split("T")[0]);
+  };
+
+  const setToday = () => {
+    const today = new Date().toISOString().split("T")[0];
+    setStartDate(today);
+    setEndDate(today);
+  };
+
+  const setPreviousDay = () => {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split("T")[0];
+    setStartDate(yesterdayStr);
+    setEndDate(yesterdayStr);
+  };
+
   // Mock daily data for the employee
-  const dailyData: DailyData[] = Array.from({ length: 90 }, (_, index) => {
+  const allDailyData: DailyData[] = Array.from({ length: 90 }, (_, index) => {
     const date = new Date();
     date.setDate(date.getDate() - index);
     const hours = Math.round((Math.random() * 10 + 2) * 10) / 10; // 2-12 hours
+
+    const tasks = [
+      "Development work on user dashboard",
+      "Bug fixes and code review",
+      "Meeting with product team",
+      "Documentation updates",
+      "Testing and quality assurance",
+      "UI/UX improvements",
+      "Database optimization",
+      "API integration work",
+      "Code refactoring",
+      "Team collaboration and planning",
+    ];
 
     return {
       date: date.toISOString().split("T")[0],
       hours,
       rating: hours >= 8 ? (hours >= 12 ? 5 : 4) : hours >= 6 ? 3 : 2,
+      description: tasks[index % tasks.length],
     };
   }).reverse();
+
+  // Filter data based on date range
+  const filteredDailyData = allDailyData.filter((day) => {
+    const dayDate = new Date(day.date);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    return dayDate >= start && dayDate <= end;
+  });
+
+  // Use filtered data or show specific date if selected
+  const dailyData = normalizedSelectedDate
+    ? allDailyData.filter((day) => day.date === normalizedSelectedDate)
+    : filteredDailyData.length > 0
+    ? filteredDailyData
+    : allDailyData;
 
   // Category distribution data
   const categoryData: CategoryData[] = [
@@ -102,7 +185,11 @@ const EmployeeDateDetails: React.FC = () => {
           <button
             onClick={() =>
               navigate(
-                `/dashboard/view-emp-data?employeeId=${employeeId}&employeeName=${employeeName}`
+                `/dashboard/view-emp-data?email=${encodeURIComponent(
+                  employeeEmail
+                )}&employeeId=${employeeId}&employeeName=${encodeURIComponent(
+                  employeeName
+                )}`
               )
             }
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -119,6 +206,109 @@ const EmployeeDateDetails: React.FC = () => {
         <div className="text-sm text-gray-600">
           Period: {currentDailyData[0]?.date} to{" "}
           {currentDailyData[currentDailyData.length - 1]?.date}
+        </div>
+      </div>
+
+      {/* Date Range Picker */}
+      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">
+            Date Range Filter
+          </h3>
+          {selectedDate && (
+            <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
+              Viewing data for:{" "}
+              {normalizedSelectedDate &&
+                new Date(normalizedSelectedDate).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+            </div>
+          )}
+        </div>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-3">
+            Quick Date Ranges
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={setToday}
+              className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              Today
+            </button>
+            <button
+              onClick={setPreviousDay}
+              className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              Previous Day
+            </button>
+            <button
+              onClick={() => setDateRange(6)}
+              className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              Last 7 Days
+            </button>
+            <button
+              onClick={() => setDateRange(29)}
+              className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors"
+            >
+              Last 30 Days
+            </button>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              End Date
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => {
+                navigate(
+                  `/dashboard/view-emp-date-data?email=${encodeURIComponent(
+                    employeeEmail
+                  )}&startDate=${startDate}&endDate=${endDate}`
+                );
+              }}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Apply Filter
+            </button>
+            {selectedDate && (
+              <button
+                onClick={() => {
+                  navigate(
+                    `/dashboard/view-emp-date-data?email=${encodeURIComponent(
+                      employeeEmail
+                    )}`
+                  );
+                }}
+                className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+              >
+                Clear Date
+              </button>
+            )}
+          </div>
         </div>
       </div>
 
@@ -254,40 +444,6 @@ const EmployeeDateDetails: React.FC = () => {
         </div>
       </div>
 
-      {/* Category Cards */}
-      <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Category Breakdown
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {categoryData.map((category) => (
-            <div
-              key={category.name}
-              className="p-4 bg-gray-50 rounded-lg text-center"
-            >
-              <div
-                className="w-4 h-4 rounded-full mx-auto mb-2"
-                style={{ backgroundColor: category.color }}
-              />
-              <p className="text-sm font-medium text-gray-900">
-                {category.name}
-              </p>
-              <p className="text-lg font-semibold text-gray-700">
-                {category.hours}h
-              </p>
-              <p className="text-xs text-gray-500">
-                {(
-                  (category.hours /
-                    categoryData.reduce((sum, cat) => sum + cat.hours, 0)) *
-                  100
-                ).toFixed(1)}
-                %
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Daily Details Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="p-6 border-b border-gray-200 flex items-center justify-between">
@@ -340,6 +496,9 @@ const EmployeeDateDetails: React.FC = () => {
                   Performance Rating
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Description
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
               </tr>
@@ -364,6 +523,11 @@ const EmployeeDateDetails: React.FC = () => {
                       <span className="text-sm text-gray-500">
                         ({day.rating})
                       </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900 max-w-xs">
+                    <div className="truncate" title={day.description}>
+                      {day.description}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

@@ -24,6 +24,7 @@ const EmployeeDetails: React.FC = () => {
   const navigate = useNavigate();
   const employeeId = searchParams.get("employeeId");
   const employeeName = searchParams.get("employeeName") || "Unknown Employee";
+  const employeeEmail = searchParams.get("email") || "john.doe@company.com";
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -218,6 +219,9 @@ const EmployeeDetails: React.FC = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Total Hours
                 </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -239,6 +243,23 @@ const EmployeeDetails: React.FC = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {entry.totalHours.toFixed(1)}h
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <button
+                      onClick={() => {
+                        // Convert YYYY-MM-DD to MM-DD-YYYY format as requested
+                        const [year, month, day] = entry.date.split("-");
+                        const formattedDate = `${month}-${day}-${year}`;
+                        navigate(
+                          `/dashboard/view-emp-date-data?email=${encodeURIComponent(
+                            employeeEmail
+                          )}&date=${formattedDate}`
+                        );
+                      }}
+                      className="text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      View More
+                    </button>
                   </td>
                 </tr>
               ))}

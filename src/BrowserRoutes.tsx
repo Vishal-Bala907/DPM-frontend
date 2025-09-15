@@ -12,6 +12,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import ViewOrganizationData from "./pages/ViewOrganizationData";
 import ViewEmployeeData from "./pages/ViewEmployeeData";
 import ViewEmployeeDateData from "./pages/ViewEmployeeDateData";
+import UserProfile from "./pages/UserProfile";
 const BrowserRoutes = () => {
   const RouteConfig = () => {
     const ROUTES = useRoutes([
@@ -48,6 +49,10 @@ const BrowserRoutes = () => {
         element: <Login />,
       },
       {
+        path: "/profile",
+        element: <UserProfile />,
+      },
+      {
         path: "/oauth2/redirect",
         element: <OAuth2RedirectHandler />,
       },
@@ -69,6 +74,10 @@ const BrowserRoutes = () => {
           },
           {
             path: "/dashboard/view-emp-data-datewise",
+            element: <ViewEmployeeDateData />,
+          },
+          {
+            path: "/dashboard/view-emp-date-data",
             element: <ViewEmployeeDateData />,
           },
         ],
