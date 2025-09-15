@@ -13,6 +13,9 @@ import ViewOrganizationData from "./pages/ViewOrganizationData";
 import ViewEmployeeData from "./pages/ViewEmployeeData";
 import ViewEmployeeDateData from "./pages/ViewEmployeeDateData";
 import UserProfile from "./pages/UserProfile";
+import CategoriesPage from "./pages/CategoriesPage";
+import MailsPage from "./pages/MailsPage";
+import EmployeesPage from "./pages/EmployeesPage";
 const BrowserRoutes = () => {
   const RouteConfig = () => {
     const ROUTES = useRoutes([
@@ -79,6 +82,18 @@ const BrowserRoutes = () => {
           {
             path: "/dashboard/view-emp-date-data",
             element: <ViewEmployeeDateData />,
+          },
+          {
+            path: "/dashboard/categories",
+            element: <CategoriesPage />,
+          },
+          {
+            path: "/dashboard/mails",
+            element: <MailsPage />,
+          },
+          {
+            path: "/dashboard/employees",
+            element: <EmployeesPage />,
           },
         ],
       },
